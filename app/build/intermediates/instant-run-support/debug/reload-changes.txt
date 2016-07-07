@@ -1,0 +1,4 @@
+CHANGED,C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\cor3\bluetoothpanel\PresetsActivity$3$override.class
+CHANGED,C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\cor3\bluetoothpanel\PresetsActivity$2$override.class
+CHANGED,C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\android\tools\fd\runtime\AppPatchesLoaderImpl.class
+CHANGED,C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\cor3\bluetoothpanel\PresetsActivity$override.class

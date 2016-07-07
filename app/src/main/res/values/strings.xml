@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BluetoothPanel</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="save">Save</string>
+    <string name="load">Load</string>
+    <string name="reset">Reset</string>
+    <string name="title_activity_presets">Presets</string>
+
+</resources>

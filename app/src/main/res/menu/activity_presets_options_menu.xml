@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".PresetsActivity">
+
+    <item
+        android:id="@+id/activity_presets_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="always"
+        android:title="Add Preset"
+        />
+
+    <item
+        android:id="@+id/activity_presets_cancel"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:showAsAction="always"
+        android:title="Cancel"
+        android:visible="false"
+        />
+
+    <item
+        android:id="@+id/activity_presets_confirm"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="always"
+        android:title="Confirm"
+        android:visible="false"
+        />
+
+</menu>

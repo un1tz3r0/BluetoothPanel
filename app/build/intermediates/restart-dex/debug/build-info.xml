@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="arm64-v8a,armeabi-v7a,armeabi"
+    api-level="23"
+    density="xxxhdpi"
+    format="7"
+    timestamp="407659133670245"
+    token="-7301198320469752171" >
+
+    <task
+        name="javac"
+        duration="1760" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="464" />
+    <task
+        name="verifier"
+        duration="86" />
+
+    <artifact
+        location="C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_4\classes.dex"
+        type="DEX" />
+
+    <build timestamp="407056699515561" >
+        <artifact
+            location="C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\outputs\apk\app-debug.apk"
+            type="MAIN" />
+    </build>
+    <build timestamp="407659133670245" >
+        <artifact
+            location="C:\Users\Victor Condino\Downloads\BluetoothPanel-2016-06-23\BluetoothPanel\app\build\intermediates\transforms\dex\debug\folders\1000\5\slice_4\classes.dex"
+            type="DEX" />
+    </build>
+
+</instant-run>

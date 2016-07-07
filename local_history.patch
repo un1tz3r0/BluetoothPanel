@@ -1,0 +1,622 @@
+Index: app/src/main/java/com/cor3/bluetoothpanel/ParameterValueListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/cor3/bluetoothpanel/ParameterValueListener.java	(revision )
++++ app/src/main/java/com/cor3/bluetoothpanel/ParameterValueListener.java	(revision )
+@@ -0,0 +1,8 @@
++package com.cor3.bluetoothpanel;
++
++/**
++ * Created by Victor Condino on 7/1/2016.
++ */
++public interface ParameterValueListener {
++    public void onParameterValueChange(Parameter p, boolean interactive, boolean remote);
++}
+Index: app/src/main/java/com/cor3/bluetoothpanel/Preset.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/cor3/bluetoothpanel/Preset.java	(revision )
++++ app/src/main/java/com/cor3/bluetoothpanel/Preset.java	(revision )
+@@ -1,28 +1,99 @@
+ package com.cor3.bluetoothpanel;
+ 
++import android.os.Bundle;
+ import android.os.Parcel;
+ import android.os.Parcelable;
+-import android.util.Pair;
+-import android.util.TypedValue;
++import android.util.ArrayMap;
++import android.util.Log;
+ 
+-import java.util.Set;
+-
+ /**
+  * Created by Victor Condino on 7/1/2016.
+  */
+ public class Preset implements Parcelable {
+-    Set<Pair<String, TypedValue>> values;
++    public ArrayMap<String, String> values;
+ 
+-    /**
+-     * @return
+-     */
+-    @Override
++    public Preset() {
++        values = new ArrayMap<>();
++    }
++
++    public Preset(Iterable<Parameter> from)
++    {
++        this();
++        for(Parameter p : from)
++        {
++            if(p.kind == Parameter.FLOAT_PARAM)
++                values.put(p.name, String.format("%f", p.val));
++            else if(p.kind == Parameter.INT_PARAM)
++                values.put(p.name, String.format("%d", (int)p.val));
++            else if (p.kind == Parameter.BOOL_PARAM)
++                values.put(p.name, String.format("%d", (p.val != 0.0f) ? 1 : 0));
++            else if (p.kind == Parameter.NULL_PARAM)
++                values.put(p.name, "0");
++            else
++                Log.e("Preset", "Error in Iterable<Parameter> constructor... invalid Parameter.kind for parameter '"+p.name+"'!");
++        }
++    }
++
++    public void applyTo(Iterable<Parameter> params)
++    {
++        // TODO write this crapola
++    }
++
+     public int describeContents() {
+         return 0;
+     }
+ 
+-    @Override
+-    public void writeToParcel(Parcel parcel, int i) {
++    public void writeToParcel(Parcel out, int flags) {
++        Bundle b = new Bundle();
++        for(ArrayMap.Entry<String, String> entry : values.entrySet())
++        {
++            b.putString(entry.getKey(), entry.getValue());
++        }
++        out.writeBundle(b);
++    }
+ 
++    public static final Parcelable.Creator<Preset> CREATOR
++            = new Parcelable.Creator<Preset>() {
++        public Preset createFromParcel(Parcel in) {
++            return new Preset(in);
+-    }
++        }
++
++        public Preset[] newArray(int size) {
++            return new Preset[size];
++        }
++    };
++
++    private Preset(Parcel in) {
++        Bundle b = in.readBundle();
++        values.clear();
++        for(String k : b.keySet())
++        {
++            values.put(k, b.getString(k));
++
++            /*
++            Object v = b.get(k);
++
++            if(Float.class.isInstance(v)) {
++                values.put(k, String.format("%f", (Float) v));
++            }
++            else if(Integer.class.isInstance(v)) {
++                values.put(k, String.format("%d", (Integer) v));
++            }
++            else if (Boolean.class.isInstance(v)) {
++                values.put(k, String.format("%d", ((Boolean) v) ? 1 : 0));
++            }
++            else if (String.class.isInstance(v)) {
++                values.put(k, (String) v);
++            } else {
++                try {
++                    values.put(k, v.toString());
++                } catch (Exception e) {
++                    e.printStackTrace();
++                }
++            }
++            */
++        }
++    }
++
++
+ }
+Index: app/src/main/java/com/cor3/bluetoothpanel/Parameter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/cor3/bluetoothpanel/Parameter.java	(revision )
++++ app/src/main/java/com/cor3/bluetoothpanel/Parameter.java	(revision )
+@@ -5,6 +5,11 @@
+ 
+ public class Parameter
+ {
++    String name;
++    int kind;
++    boolean bounded;
++    float min, max, def, val;
++
+     public static final int FLOAT_PARAM = 1;
+     public static final int INT_PARAM = 2;
+     public static final int BOOL_PARAM = 3;
+@@ -33,11 +38,61 @@
+         this.val = val;
+     }
+ 
+-    String name;
+-    int kind;
+-    boolean bounded;
+-    float min, max, def, val;
++    private ParameterValueListener mListener = null;
+ 
++    void setValueListener(ParameterValueListener listener)
++    {
++        mListener = listener;
++    }
++
++    public boolean setValue(String s) {
++        return setValue(s, false, false);
++    }
++
++    public boolean setValue(String s, boolean interactive, boolean remote)
++    {
++        Float f = null;
++        try {
++            f = Float.parseFloat(s);
++        } catch (NumberFormatException e) {
++            f = null;
++        }
++        if (f != null) {
++            setValue(f, interactive, remote);
++            return true;
++        }
++        return false;
++    }
++
++
++    public void setValue(float f) {
++        setValue(f, false, false);
++    }
++
++    public void setValue(float f, boolean interactive, boolean remote)
++    {
++            if(bounded)
++            {
++                if(f < this.min)
++                    f = this.min;
++                else if(f > this.max)
++                    f = this.max;
++            }
++            if(this.kind == INT_PARAM)
++                f = (float)Math.round(f);
++            else if(this.kind == BOOL_PARAM)
++                f = (f > 0f)?(1f):(0f);
++
++        if(f != this.val)
++        {
++            this.val = f;
++
++            if (this.mListener != null) {
++                this.mListener.onParameterValueChange(this, interactive, remote);
++            }
++        }
++    }
++
+     public static Parameter parse(String desc)
+     {
+         String[] words=Pattern.compile("\\s+").split(desc);
+@@ -87,5 +142,9 @@
+             return p;
+         }
+         return null;
++    }
++
++    public float getValue() {
++        return val;
+     }
+ }
+Index: app/src/main/java/com/cor3/bluetoothpanel/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/cor3/bluetoothpanel/MainActivity.java	(revision )
++++ app/src/main/java/com/cor3/bluetoothpanel/MainActivity.java	(revision )
+@@ -10,6 +10,7 @@
+ import android.view.MenuItem;
+ import android.widget.Toast;
+ 
++import java.util.ArrayList;
+ import java.util.Objects;
+ 
+ public class MainActivity extends ListActivity 
+@@ -72,16 +73,22 @@
+                 }
+             }
+         };
++        
+         this.params = new ParameterListAdapter(this, MainActivity.this.getLayoutInflater()) {
++        };
++
++        this.params.setParameterValueListener(new ParameterValueListener() {
+             @Override
+-            public void onParameterChanged(Parameter p)
+-            {
++            public void onParameterValueChange(Parameter p, boolean interactive, boolean remote) {
++                if(interactive || !remote) {
+-              if(p.kind == Parameter.FLOAT_PARAM)
++                    if (p.kind == Parameter.FLOAT_PARAM)
+-                  MainActivity.this.taggedQueue.add(p.name, String.format("set %s %f\r\n", p.name, p.val));
+-              else
++                        MainActivity.this.taggedQueue.add(p.name, String.format("set %s %f\r\n", p.name, p.val));
++                    else
+-                  MainActivity.this.taggedQueue.add(p.name, String.format("set %s %d\r\n", p.name, (int)p.val));
++                        MainActivity.this.taggedQueue.add(p.name, String.format("set %s %d\r\n", p.name, (int) p.val));
+-            }
++                }
+-        };
++            }
++        });
++
+         this.setListAdapter(this.params);
+     }
+ 
+@@ -112,13 +119,14 @@
+         else
+         {
+             this.conn = new BluetoothSerialThread(address) {
+-
++                private final ArrayList<Parameter> listed = new ArrayList<>();
+                 private boolean listing = false;
+                 private boolean need_list = true;
+ 
+                 @Override
+                 protected void onDisconnected()
+                 {
++                    this.listed.clear();
+                     this.need_list = true;
+                     if(MainActivity.this.params != null)
+                         MainActivity.this.params.clear();
+@@ -130,6 +138,7 @@
+                 protected void onConnected()
+                 {
+                     this.need_list = true;
++                    this.listed.clear();
+                     //write("list\r\n");
+                 }
+ 
+@@ -137,6 +146,7 @@
+                 protected void onConnecting()
+                 {
+                     this.need_list = true;
++                    this.listed.clear();
+                     //params.clear();
+                 }
+ 
+@@ -144,18 +154,37 @@
+                 protected void onRead(String line)
+                 {
+                     line = line.replaceAll("\r", "");
+-                    Log.i(MainActivity.TAG, "...onRead('"+line+"')");
++                    Log.i(MainActivity.TAG, "...entering onRead('"+line+"')...");
+                     if(this.need_list) {
+-                        MainActivity.this.taggedQueue.add("list", "list\r\n");
+                         this.need_list = false;
++                        Log.i(MainActivity.TAG, "...onRead(): have need_list set, add 'list<CR><NL>' to output queue and clear flag.");
++                        MainActivity.this.taggedQueue.add("list", "list\r\n");
+                     }
+                     //Toast.makeText(MainActivity.this, line, Toast.LENGTH_LONG).show();
+                     if(Objects.equals(line, "begin"))
++                    {
++                        Log.i(TAG, "... BEGIN-of-LISTING line received, in onRead(): '" + line + "'");
++                        this.listed.clear();
+                         this.listing = true;
++                    }
+                     else if(Objects.equals(line, "end"))
++                    {
++                        Log.e(TAG, "... END-of-LISTING line received, in onRead(): '" + line + "'");
++
++                        ParameterListAdapter pla = MainActivity.this.params;
+                         this.listing = false;
++                        pla.clear();
++                        for(Parameter p : this.listed)
++                        {
++                            Log.e(TAG, "... fill listadapter with parameter from list, in onRead(): '" + p.name + "'");
++
++                            pla.put(p, false, true);
++                        }
++                    }
+                     else if(line.startsWith("!"))
+                     {
++                        Log.e(TAG, "... Error line received, in onRead(): '" + line + "'");
++
+                         Toast.makeText(MainActivity.this, line, Toast.LENGTH_LONG).show();
+                     }
+                     else if(this.listing)
+@@ -163,10 +192,19 @@
+                         Parameter p = Parameter.parse(line);
+                         if(p != null)
+                         {
+-                            MainActivity.this.params.add(p);
++                            Log.w(TAG, "... successfully parsed parameter list line, in onRead(): '" + line + "'");
++
++                            this.listed.add(p);
+                         }
++                        else
++                        {
++                            Log.e(TAG, "... *UN*successful parsing parameter list line, in onRead(): '" + line + "'");
+-                    }
++                        }
+-
++                    }
++                    else
++                    {
++                        Log.wtf(TAG, "... unhandled line received, in onRead(): '"+ line +"'");
++                    }
+                 }
+ 
+             };
+Index: app/src/main/java/com/cor3/bluetoothpanel/ParameterListAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/cor3/bluetoothpanel/ParameterListAdapter.java	(revision )
++++ app/src/main/java/com/cor3/bluetoothpanel/ParameterListAdapter.java	(revision )
+@@ -1,6 +1,7 @@
+ package com.cor3.bluetoothpanel;
++
+ import android.content.Context;
+-import android.util.ArraySet;
++import android.util.ArrayMap;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+@@ -15,22 +16,65 @@
+ import com.cor3.bluetoothpanel.R.layout;
+ 
+ import java.util.ArrayList;
++import java.util.Objects;
+ 
+ public abstract class ParameterListAdapter extends BaseAdapter
+ {
+     private Context context;
+     private LayoutInflater inflater;
+     private ArrayList<Parameter> items;
+-    private ArraySet<String> tracking;
++    private ArrayMap<Parameter, View> visibleItems;
+ 
++    private class MyListener implements ParameterValueListener {
++        @Override
++        public void onParameterValueChange(Parameter p, boolean interactive, boolean remote) {
++            if(ParameterListAdapter.this.delegate_to != null)
++            {
++                ParameterListAdapter.this.delegate_to.onParameterValueChange(p, interactive, remote);
++            }
++            if (remote || !interactive) {
++                notifyDataSetChanged();
++            }
++        }
++    };
++    private final MyListener mMyListener = new MyListener();
++
++    private ParameterValueListener delegate_to = null;
++
++    public void setParameterValueListener(ParameterValueListener dlgto)
++    {
++        this.delegate_to = dlgto;
++    }
++
+     public ParameterListAdapter(Context c, LayoutInflater layoutInflater)
+     {
+         this.items = new ArrayList<Parameter>();
+         this.context = c;
+         this.inflater = layoutInflater; //(LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+-        this.tracking = new ArraySet<>();
++        this.visibleItems = new ArrayMap<>();
+     }
+-    
++
++    public void put(Parameter p, boolean p2, boolean p3)
++    {
++        if(p != null && getIndex(p.name) < 0 && p3) {
++            items.add(p);
++            p.setValueListener(mMyListener);
++            p.setValue(p.getValue());
++            this.notifyDataSetChanged();
++        }
++        else
++        {
++            for(Parameter item : items)
++            {
++                if(Objects.equals(p.name, item.name))
++                {
++                    item.setValue(p.getValue(), p2, p3);
++                    this.notifyDataSetChanged();
++                }
++            }
++        }
++    }
++
+     public int getIndex(String name)
+     {
+         for(int i = 0; i < this.items.size(); i ++)
+@@ -41,44 +85,31 @@
+         }
+         return -1;
+     }
+-    
++
+-    public void add(Parameter p)
++    public void applyPreset(Preset preset)
+     {
+-        if(p == null || p.name.equals(""))
+-            return;
+-        int i = this.getIndex(p.name);
+-        if(i >= 0)
+-        {
+-            boolean isTracking = false;
+-            for(String s : this.tracking)
+-            {
+-                if(s.equals(p.name))
+-                    isTracking = true;
+-            }
+-            if(!isTracking) {
+-                this.items.set(i, p);
++        preset.applyTo(items);
+-                this.notifyDataSetChanged();
+-            }
++        this.notifyDataSetChanged();
++    }
++
++    public Preset createPreset() {
++        Preset preset = new Preset(items);
++        return preset;
+-        }
++    }
+-        else {
+-            this.items.add(p);
+-            this.notifyDataSetChanged();
+-        }
+-    }
+     
+     public void clear()
+     {
+         this.items.clear();
+-        this.tracking.clear();
++        //this.tracking.clear();
+         this.notifyDataSetChanged();
+     }
+     
+     public void replaceAll(ArrayList<Parameter> with)
+     {
+         this.items.clear();
+-        this.tracking.clear();
++        //this.tracking.clear();
+         this.items.addAll(with);
+-        this.notifyDataSetChanged();
++        this.notifyDataSetInvalidated();
+     }
+     
+     @Override
+@@ -118,9 +149,9 @@
+             return param.kind - 1;
+         return 0;
+     }
+-    
++
+-    public abstract void onParameterChanged(Parameter p);
+-    
++
++
+     @Override
+     public View getView(int p1, View p2, ViewGroup p3)
+     {
+@@ -173,28 +204,29 @@
+             }
+             float pval = (param.val - param.min) / (param.max - param.min);
+             valueControl.setProgress(Math.round(pval * 1000.0f));
++
+             valueControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+             
+                     @Override
+-                    public void onProgressChanged(SeekBar p1, int p2, boolean p3)
++                    public void onProgressChanged (SeekBar p1, int p2, boolean p3)
+                     {
+                         Parameter p = (Parameter)p1.getTag(R.id.tag_param);
+                         ParameterListAdapter pla = (ParameterListAdapter)p1.getTag(R.id.tag_listadapter);
+                         TextView vtv = (TextView)p1.getTag(R.id.tag_value_textview);
+ 
+-                        float value = (float) p1.getProgress() / 1000.0f;
++                        float value = (float)p2 / (float)(p1.getMax());
+                         value = value * (p.max - p.min) + p.min;
+                         if(p.kind == Parameter.INT_PARAM)
+                             value = Math.round(value);
+ 
+-                        p.val = value;
+-
+-                        if (p.kind == Parameter.INT_PARAM)
++                        if (p.kind == Parameter.INT_PARAM) {
+                             vtv.setText(String.format("%d", (int)p.val));
+-                        else
++                        }
++                        else {
+                             vtv.setText(String.format("%f", p.val));
++                        }
+ 
+-                        pla.onParameterChanged(p);
++                        p.setValue(value, p3, false);
+                     }
+ 
+                     @Override
+@@ -203,7 +235,7 @@
+                         Parameter p = (Parameter) p1.getTag(R.id.tag_param);
+                         ParameterListAdapter pla = (ParameterListAdapter) p1.getTag(R.id.tag_listadapter);
+ 
+-                        pla.tracking.add(p.name);
++                        //pla.tracking.add(p.name);
+                     }
+ 
+                     @Override
+@@ -213,22 +245,8 @@
+                         ParameterListAdapter pla = (ParameterListAdapter) p1.getTag(R.id.tag_listadapter);
+                         TextView vtv = (TextView) p1.getTag(R.id.tag_value_textview);
+ 
+-                        float val = p.val;
+-                        if (p.kind == Parameter.INT_PARAM)
+-                            val = Math.round(val);
+-                        float pval = (p.val - p.min) / (p.max - p.min);
+-                        p1.setProgress(Math.round(pval * 1000.0f));
+-
+-                        if (p.kind == Parameter.INT_PARAM)
+-                            vtv.setText(String.format("%d", (int)p.val));
+-                        else
+-                            vtv.setText(String.format("%f", p.val));
+-
+-                        for (String s : pla.tracking) {
+-                            if(s.equals(p.name))
+-                                pla.tracking.remove(s);
++                        onProgressChanged(p1, p1.getProgress(), true);
+-                        }
++                    }
+-                    }
+             });
+         }
+         else if(param.kind == Parameter.BOOL_PARAM)
+@@ -240,18 +258,20 @@
+             valueControl.setTag(R.id.tag_listadapter, this);
+ 
+             nameTextView.setText(param.name);
+-            valueControl.setChecked(param.val != 0.0f);
++            valueControl.setTag(R.id.tag_noninteractiveflag, (boolean)true);
++            valueControl.setChecked(param.val > 0.0f);
++            valueControl.setTag(R.id.tag_noninteractiveflag, (boolean)false);
+             valueControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+ 
+                     @Override
+                     public void onCheckedChanged(CompoundButton p1, boolean p2)
+                     {
++                        boolean non_interactive = (Boolean)p1.getTag(R.id.tag_noninteractiveflag);
+                         Parameter p = (Parameter)p1.getTag(id.tag_param);
+                         ParameterListAdapter pla = (ParameterListAdapter)p1.getTag(id.tag_listadapter);
+ 
+                         float value = p2 ? 1.0f : 0.0f;
+-                        p.val = value;
+-                        pla.onParameterChanged(p);
++                        p.setValue(value, !non_interactive, false);
+                     }
+                    
+             });

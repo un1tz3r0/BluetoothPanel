@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:paddingBottom="@dimen/bluetooth_device_list_v_padding"
+              android:paddingLeft="@dimen/bluetooth_device_list_h_padding"
+              android:paddingRight="@dimen/bluetooth_device_list_h_padding"
+              android:paddingTop="@dimen/bluetooth_device_list_v_padding"
+    >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_developer_board"
+        />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/bluetooth_device_list_inner_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device Name"
+            android:textAppearance="@android:style/TextAppearance.Medium"/>
+
+        <TextView
+            android:id="@android:id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/bluetooth_device_list_inner_margin2"
+            android:text="Device Address"
+            android:textAppearance="@android:style/TextAppearance.Small"/>
+
+    </LinearLayout>
+
+</LinearLayout>

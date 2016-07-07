@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_presets_empty_hint_lr_margin">48dip</dimen>
+    <dimen name="activity_presets_empty_title_margin">24dip</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="bluetooth_device_list_h_padding">24dip</dimen>
+    <dimen name="bluetooth_device_list_inner_margin">12dip</dimen>
+    <dimen name="bluetooth_device_list_inner_margin2">6dip</dimen>
+    <dimen name="bluetooth_device_list_v_padding">12dip</dimen>
+    <item name="menu_choose_device" type="id">1988</item>
+    <item name="menu_show_presets" type="id">1965</item>
+    <item name="tag_listadapter" type="id">1984</item>
+    <item name="tag_noninteractiveflag" type="id">1992</item>
+    <item name="tag_param" type="id">1983</item>
+    <item name="tag_value_textview" type="id">1985</item>
+    <string name="app_name">BluetoothPanel</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="load">Load</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="title_activity_presets">Presets</string>
+    <style name="AppTheme" parent="@android:style/Theme.Holo">
+	</style>
+</resources>

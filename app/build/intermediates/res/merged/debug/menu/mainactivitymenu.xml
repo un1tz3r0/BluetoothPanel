@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <group>
+    <item
+        android:id="@id/menu_show_presets"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_presets"
+        android:title="Presets"/>
+    </group>
+    <group>
+    <item android:id="@id/menu_choose_device"  android:showAsAction="never" android:icon="@drawable/ic_bluetooth_bcast" android:title="Choose Device"/>
+        </group>
+    <group>
+    <item android:title="@string/save" android:showAsAction="never" android:icon="@drawable/ic_save" android:id="@+id/menu_save"/>
+    <item android:title="@string/load" android:showAsAction="never" android:icon="@drawable/ic_load" android:id="@+id/menu_load"/>
+    <item android:title="@string/reset" android:showAsAction="never" android:icon="@drawable/ic_reset" android:id="@+id/menu_reset"/>
+    </group>
+</menu>

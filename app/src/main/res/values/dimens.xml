@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bluetooth_device_list_h_padding">24dip</dimen>
+    <dimen name="bluetooth_device_list_v_padding">12dip</dimen>
+    <dimen name="bluetooth_device_list_inner_margin">12dip</dimen>
+    <dimen name="bluetooth_device_list_inner_margin2">6dip</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_presets_empty_title_margin">24dip</dimen>
+    <dimen name="activity_presets_empty_hint_lr_margin">48dip</dimen>
+</resources>

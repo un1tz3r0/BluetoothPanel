@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tag_param" type="id">1983</item>
+    <item name="tag_listadapter" type="id">1984</item>
+    <item name="tag_value_textview" type="id">1985</item>
+    <item name="menu_choose_device" type="id">1988</item>
+    <item name="tag_noninteractiveflag" type="id">1992</item>
+    <item name="menu_show_presets" type="id">1965</item>
+</resources>

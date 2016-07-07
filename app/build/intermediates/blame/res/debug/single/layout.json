@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\build\\intermediates\\res\\merged\\debug\\layout\\bool_param_list_item.xml",
+        "source": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\src\\main\\res\\layout\\bool_param_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_presets.xml",
+        "source": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\src\\main\\res\\layout\\activity_presets.xml"
+    },
+    {
+        "merged": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\build\\intermediates\\res\\merged\\debug\\layout\\main.xml",
+        "source": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\src\\main\\res\\layout\\main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\build\\intermediates\\res\\merged\\debug\\layout\\float_param_list_item.xml",
+        "source": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\src\\main\\res\\layout\\float_param_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\build\\intermediates\\res\\merged\\debug\\layout\\int_param_list_item.xml",
+        "source": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\src\\main\\res\\layout\\int_param_list_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\build\\intermediates\\res\\merged\\debug\\layout\\bluetooth_device_list_item.xml",
+        "source": "C:\\Users\\Victor Condino\\Downloads\\BluetoothPanel-2016-06-23\\BluetoothPanel\\app\\src\\main\\res\\layout\\bluetooth_device_list_item.xml"
+    }
+]
