@@ -1,20 +1,65 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-    android:layout_height="match_parent"
-                tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".MainActivity">
 
-    <ListView
-      android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"/>
 
-    <ProgressBar
-      android:id="@android:id/empty"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:indeterminate="true"
-      android:layout_centerInParent="true"
-      />
+	<LinearLayout
+		android:id="@android:id/empty"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
+		android:orientation="vertical"
+		android:gravity="center_horizontal">
+
+		<RelativeLayout
+			android:layout_centerHorizontal="true"
+			android:id="@+id/empty_graphic"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true">
+
+			<ProgressBar
+				style="?android:attr/progressBarStyleLarge"
+				android:id="@+id/empty_progressbar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminate="true"
+				android:layout_centerInParent="true"/>
+
+			<ImageView
+				android:tintMode="multiply"
+				android:tint="@android:color/tertiary_text_dark"
+				android:id="@+id/empty_errorgraphic"
+				android:layout_centerInParent="true"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@android:drawable/ic_dialog_alert"
+				android:scaleX="2.0"
+				android:scaleY="2.0"
+				android:alpha="0.5"/>
+
+		</RelativeLayout>
+
+		<TextView
+			android:id="@+id/empty_text"
+			android:layout_below="@id/empty_graphic"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="36"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="24dip"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textColor="@android:color/tertiary_text_dark"/>
+
+	</LinearLayout>
+
 </RelativeLayout>
+

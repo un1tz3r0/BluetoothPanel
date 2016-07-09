@@ -1,16 +1,12 @@
 package com.cor3.bluetoothpanel;
 
-import android.app.ListActivity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import java.util.Objects;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import java.util.*;
 
 public class MainActivity extends ListActivity 
 {
@@ -22,6 +18,14 @@ public class MainActivity extends ListActivity
     private SharedPreferences prefs = null;
     private Menu optionsMenu = null;
     private Preset mApplyPreset = null;
+
+    private ProgressBar mEmptyProgressBar;
+
+    private ImageView mEmptyErrorGraphic;
+
+    private TextView mEmptyErrorText;
+
+    private TextView mEmptyText;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,8 +74,14 @@ public class MainActivity extends ListActivity
     {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main);
+        this.mEmptyProgressBar = (ProgressBar)this.findViewById(R.id.empty_progressbar);
+        this.mEmptyErrorGraphic = (ImageView)this.findViewById(R.id.empty_errorgraphic);
+        this.mEmptyText = (TextView)this.findViewById(R.id.empty_text);
+        
         this.prefs = this.getPreferences(Context.MODE_APPEND);
+        
         this.conn = null;
+        
         this.taggedQueue = new RateLimitedTaggedQueue<String, String>(0.1f) {
             @Override
             protected void handle(String msg) {
@@ -81,6 +91,7 @@ public class MainActivity extends ListActivity
                 }
             }
         };
+        
         this.params = new ParameterListAdapter(this, MainActivity.this.getLayoutInflater()) {
             @Override
             public void onParameterChanged(Parameter p)
@@ -91,9 +102,19 @@ public class MainActivity extends ListActivity
                   MainActivity.this.taggedQueue.add(p.name, String.format("set %s %d\r\n", p.name, (int)p.val));
             }
         };
+        
         this.setListAdapter(this.params);
     }
 
+    public void setEmptyContent(boolean isErr, String msg)
+    {
+        if(msg != null)
+            mEmptyText.setText(msg);
+        mEmptyText.setVisibility((msg == null) ? View.GONE : View.VISIBLE);
+        mEmptyErrorGraphic.setVisibility(isErr ? View.VISIBLE : View.GONE);
+        mEmptyProgressBar.setVisibility((!isErr) ? View.VISIBLE : View.GONE);
+    }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == BluetoothDeviceListActivity.REQUEST_CHOOSE_DEVICE)
@@ -114,6 +135,7 @@ public class MainActivity extends ListActivity
                     Preset preset = Preset.fromBundle(data.getBundleExtra("chosenPreset"));
                     if (preset != null) {
                         mApplyPreset = preset;
+                        this.setEmptyContent(false, getResources().getString(R.string.applying_preset_msg));
                     }
                 }
             }

@@ -7,5 +7,5 @@
     <string name="load">Load</string>
     <string name="reset">Reset</string>
     <string name="title_activity_presets">Presets</string>
-
+  <string name="applying_preset_msg">Applying Preset</string>
 </resources>
