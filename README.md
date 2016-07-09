@@ -14,13 +14,23 @@ presented as widgets to the user once the Bluetooth connection is established.
 
 ## To Do
 
-- Clean up and refactor code to improve encapsulation and reusability.
-- Document reusable classes and modules.
-- Add context menu for Preset list rows which allows rename and delete (possibly edit?).
-- Add checkable list of Parameter names and values to be included when adding a new Preset.
-- Add more descriptive indeterminate progress indication reflecting different disconnected states
-  (device-not-seen, establishing-connection, applying-preset)
+1. Clean up and refactor code to improve encapsulation and reusability.
+2. Document reusable classes and modules.
+3. Add context menu for Preset list rows which allows rename and delete (possibly edit?).
+4. Add checkable list of Parameter names and values to be included when adding a new Preset.
+5. Add more descriptive indeterminate progress indication reflecting different disconnected states
+   (device-not-seen, establishing-connection, applying-preset)
   
+## Future
+
+There are some deficiencies that should be addressed sooner rather than later.
+
+ 1. The bluetooth connection should be handled by a background service so that it can maintain the SPP connection across multiple activities.
+ 2. Support for notifying the client of asynchronous parameter value changes outside of the `list` command's `begin`...`end` response block. (as in **(fully asynchronous) Two-Way Binding**)
+ 3. Support for read only and write only (meter and trigger) preferences, enabling and disabling preferences... 
+ 4. ??? 
+ 4. Profit.
+
 ## Hardware Side
 
 The hardware controlled by this app is intended to be very resource-constrained. 8-bit AVR devices such as that used in the Arduino Uno and Mega, 
